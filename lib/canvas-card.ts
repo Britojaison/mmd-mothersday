@@ -1,14 +1,14 @@
 import type { Persona } from "@/lib/data";
 
 const C = {
-    primary: "#C06030",
-    bgWarm: "#FFF8F0",
+    primary: "#0D1F3C",
+    bgWarm: "#F7F8FA",
     bgCard: "#FFFFFF",
-    bgTint: "#FFF3EB",
-    border: "#F0C8A0",
-    textDark: "#2C1A0E",
-    textMid: "#7A5540",
-    textMuted: "#B07050",
+    bgTint: "#EDF0F4",
+    border: "#D0D6E0",
+    textDark: "#0D1F3C",
+    textMid: "#3D5068",
+    textMuted: "#7A8A9E",
 };
 
 const W = 960; // 480 * 2x

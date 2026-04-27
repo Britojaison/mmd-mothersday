@@ -4,9 +4,9 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import type { Persona } from "@/lib/data";
 import { generateCardPNG } from "@/lib/canvas-card";
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import Toast from "@/components/toast";
+import { FloralTopRight, FloralBottomLeft, FloralSideLeft, FloralSideRight } from "@/components/florals";
 
 interface GreetingCardClientProps {
   persona: Persona;
@@ -36,11 +36,15 @@ export default function GreetingCardClient({ persona, momName }: GreetingCardCli
   };
 
   return (
-    <motion.section initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }} className="min-h-screen flex flex-col items-center px-4 sm:px-6 py-10 sm:py-16">
-      <div className="w-full max-w-lg mx-auto flex flex-col items-center gap-8">
+    <motion.section initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }} className="relative min-h-screen flex flex-col items-center px-4 sm:px-6 py-10 sm:py-16 overflow-hidden bg-gradient-animated noise-overlay">
+      <FloralTopRight className="absolute -top-4 -right-8 w-56 sm:w-72 opacity-75 pointer-events-none" />
+      <FloralBottomLeft className="absolute -bottom-4 -left-8 w-56 sm:w-72 opacity-75 pointer-events-none" />
+      <FloralSideLeft className="absolute top-1/3 -left-14 w-28 sm:w-36 opacity-35 pointer-events-none hidden md:block" />
+      <FloralSideRight className="absolute top-1/3 -right-14 w-28 sm:w-36 opacity-35 pointer-events-none hidden md:block" />
+      <div className="relative z-10 w-full max-w-lg mx-auto flex flex-col items-center gap-8">
         <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5, delay: 0.2 }} className="w-full">
-          <Card className="rounded-3xl border-border-brand overflow-hidden shadow-lg p-0">
-            <div className="h-1.5 bg-gradient-to-r from-mm-primary/60 via-mm-primary to-mm-primary/60" />
+          <Card className="rounded-3xl border-mm-border overflow-hidden shadow-lg p-0">
+            <div className="h-1.5 bg-gradient-to-r from-navy/60 via-navy to-navy/60" />
             <div className="px-8 sm:px-10 pt-10 pb-8">
               <div className="flex justify-center mb-8">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -48,8 +52,8 @@ export default function GreetingCardClient({ persona, momName }: GreetingCardCli
               </div>
               <div className="text-center mb-8">
                 <p className="text-xs font-medium tracking-[0.2em] uppercase text-text-muted mb-3">Happy Mother&apos;s Day</p>
-                <h1 className="font-display text-4xl sm:text-5xl italic text-mm-primary mb-2 leading-tight">{momName}</h1>
-                <div className="w-16 h-px bg-border-brand mx-auto mt-4" />
+                <h1 className="font-display text-4xl sm:text-5xl italic text-navy mb-2 leading-tight">{momName}</h1>
+                <div className="w-16 h-px bg-mm-border mx-auto mt-4" />
               </div>
               <div className="text-center mb-8">
                 <p className="text-xs font-medium tracking-[0.12em] uppercase text-text-muted mb-2">You are</p>
@@ -57,15 +61,15 @@ export default function GreetingCardClient({ persona, momName }: GreetingCardCli
                 <p className="text-base text-text-mid font-light leading-relaxed max-w-sm mx-auto">{persona.tagline}</p>
               </div>
               <div className="flex items-center gap-4 my-6">
-                <div className="flex-1 h-px bg-border-brand/50" />
-                <div className="w-1.5 h-1.5 rounded-full bg-mm-primary/40" />
-                <div className="flex-1 h-px bg-border-brand/50" />
+                <div className="flex-1 h-px bg-mm-border/50" />
+                <div className="w-1.5 h-1.5 rounded-full bg-navy/40" />
+                <div className="flex-1 h-px bg-mm-border/50" />
               </div>
               <div className="mb-8">
                 <p className="text-xs font-medium tracking-[0.12em] uppercase text-text-muted mb-4 text-center">Your Milky Mist Staples</p>
                 <div className="flex flex-wrap justify-center gap-2">
                   {persona.products.map((product) => (
-                    <span key={product.name} className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-border-brand bg-warm text-sm">
+                    <span key={product.name} className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-mm-border bg-off-white text-sm">
                       <span className="font-medium text-text-dark">{product.name}</span>
                       <span className="text-text-muted font-light">&middot;</span>
                       <span className="text-text-muted font-light">{product.reason}</span>
@@ -73,34 +77,40 @@ export default function GreetingCardClient({ persona, momName }: GreetingCardCli
                   ))}
                 </div>
               </div>
-              <div className="bg-tint rounded-2xl p-6 mb-8">
+              <div className="bg-light-gray rounded-2xl p-6 mb-8">
                 <p className="text-xs font-medium tracking-[0.12em] uppercase text-text-muted mb-2 text-center">A Recipe Just for You</p>
                 <h3 className="font-display text-xl font-medium text-text-dark mb-2 text-center">{persona.recipe}</h3>
                 <p className="text-sm text-text-mid font-light leading-relaxed text-center mb-4">{persona.recipeDescription}</p>
                 <div className="flex flex-wrap justify-center gap-2">
                   {persona.recipeTags.map((tag) => (
-                    <span key={tag} className="px-3 py-1 rounded-full bg-mm-card text-xs font-medium text-mm-primary border border-border-brand/50">{tag}</span>
+                    <span key={tag} className="px-3 py-1 rounded-full bg-white text-xs font-medium text-navy border border-navy/20">{tag}</span>
                   ))}
                 </div>
               </div>
               <div className="text-center py-4">
-                <div className="w-10 h-px bg-border-brand mx-auto mb-6" />
+                <div className="w-10 h-px bg-mm-border mx-auto mb-6" />
                 <p className="font-display text-xl sm:text-2xl italic text-text-dark leading-relaxed mb-2">&ldquo;{persona.sweetMessage}&rdquo;</p>
                 <p className="text-sm text-text-muted font-light mt-4">With love, from your family</p>
               </div>
             </div>
-            <div className="h-1.5 bg-gradient-to-r from-mm-primary/60 via-mm-primary to-mm-primary/60" />
+            <div className="h-1.5 bg-gradient-to-r from-navy/60 via-navy to-navy/60" />
           </Card>
         </motion.div>
 
-        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.5 }} className="flex flex-col sm:flex-row gap-3 w-full">
-          <Button onClick={handleDownload} disabled={downloading} className="flex-1 h-12 rounded-full bg-mm-primary text-white hover:bg-mm-primary-dark text-sm font-medium">
-            <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.5 }} className="flex flex-col gap-3 w-full">
+          <button
+            onClick={handleDownload}
+            disabled={downloading}
+            className="w-full flex items-center justify-center gap-2 h-12 rounded-full bg-navy text-white text-sm font-semibold tracking-wide
+                       hover:bg-navy-light active:scale-[0.98] transition-all duration-200 cursor-pointer disabled:opacity-50 shadow-md"
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
             </svg>
             {downloading ? "Generating..." : "Save this card"}
-          </Button>
-          <a href="/" className="flex-1 flex items-center justify-center gap-2 h-12 rounded-full border border-border-brand text-text-dark bg-mm-card hover:bg-tint text-sm font-medium transition-colors">
+          </button>
+          <a href="/" className="w-full flex items-center justify-center gap-2 h-12 rounded-full border border-mm-border bg-white text-text-dark text-sm font-semibold
+                                  hover:bg-light-gray active:scale-[0.98] transition-all duration-200 shadow-sm">
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
             </svg>

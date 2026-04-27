@@ -38,7 +38,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={cn(playfair.variable, dmSans.variable, "font-sans", geist.variable)}>
-      <body className="min-h-screen bg-warm font-body antialiased">
+      <body className="min-h-screen bg-off-white font-body antialiased">
         {children}
       </body>
     </html>
