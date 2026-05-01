@@ -234,7 +234,7 @@ export async function generateCardPNG(persona: Persona, momName: string): Promis
 
     // Logo
     try {
-        const logo = await loadImage("/images/logo.png");
+        const logo = await loadImage("/images/logo.png?v=2");
         const logoW = 220;
         const logoH = (logo.height / logo.width) * logoW;
         ctx.drawImage(logo, W / 2 - logoW / 2, y, logoW, logoH);

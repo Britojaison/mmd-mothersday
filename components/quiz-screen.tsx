@@ -5,7 +5,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { questions, type Dimension } from "@/lib/data";
 import { Button } from "@/components/ui/button";
-import { FloralTopRight, FloralBottomLeft } from "@/components/florals";
 
 interface QuizScreenProps {
   initialAnswers: (Dimension | null)[];
@@ -37,18 +36,16 @@ export default function QuizScreen({ initialAnswers, onComplete, onBack }: QuizS
       onComplete(finalAnswers.filter((a): a is Dimension => a !== null));
     } else {
       setDirection(1);
-      const nextQ = currentQuestion + 1;
-      setCurrentQuestion(nextQ);
-      setSelected(answers[nextQ] ?? null);
+      setCurrentQuestion(currentQuestion + 1);
+      setSelected(answers[currentQuestion + 1] ?? null);
     }
   }, [selected, isLastQuestion, answers, currentQuestion, onComplete]);
 
   const handlePrev = useCallback(() => {
     if (currentQuestion === 0) { onBack(); return; }
     setDirection(-1);
-    const prevQ = currentQuestion - 1;
-    setCurrentQuestion(prevQ);
-    setSelected(answers[prevQ] ?? null);
+    setCurrentQuestion(currentQuestion - 1);
+    setSelected(answers[currentQuestion - 1] ?? null);
   }, [currentQuestion, answers, onBack]);
 
   const slideVariants = {
@@ -58,96 +55,52 @@ export default function QuizScreen({ initialAnswers, onComplete, onBack }: QuizS
   };
 
   return (
-    <motion.section
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.3 }}
-      className="relative min-h-screen flex flex-col px-6 py-8 overflow-hidden bg-gradient-animated noise-overlay"
-    >
-      <FloralTopRight className="absolute -top-8 -right-12 w-44 sm:w-56 opacity-40 pointer-events-none" />
-      <FloralBottomLeft className="absolute -bottom-8 -left-12 w-44 sm:w-56 opacity-40 pointer-events-none" />
-
-      <div className="relative z-10 flex flex-col flex-1 max-w-2xl mx-auto w-full">
+    <motion.section initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }}
+      className="h-dvh flex flex-col px-5 sm:px-6 py-4 sm:py-8 overflow-hidden bg-page">
+      <div className="flex flex-col flex-1 max-w-2xl mx-auto w-full">
         {/* Header */}
-        <div className="mb-6">
-          <div className="flex justify-center mb-5">
-            <Image src="/images/logo.png" alt="Milky Mist" width={90} height={36} className="object-contain" />
+        <div className="mb-3 sm:mb-6 shrink-0">
+          <div className="flex justify-center mb-3 sm:mb-5">
+            <Image src="/images/logo.png" alt="Milky Mist" width={80} height={32} className="object-contain sm:w-[100px]" />
           </div>
-
-          {/* Step dots */}
-          <div className="flex items-center justify-center gap-2 mb-3">
+          <div className="flex items-center justify-center gap-2 mb-1.5 sm:mb-3">
             {questions.map((_, i) => (
-              <div
-                key={i}
-                className={`
-                  step-dot w-2.5 h-2.5 rounded-full border border-mm-border
-                  ${i === currentQuestion ? "active" : i < currentQuestion ? "completed" : "bg-off-white"}
-                `}
-              />
+              <div key={i} className={`step-dot w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full border border-white/50
+                ${i === currentQuestion ? "active" : i < currentQuestion ? "completed" : "bg-white/30"}`} />
             ))}
           </div>
-          <p className="text-xs text-text-muted text-center">
-            {currentQuestion + 1} of {questions.length}
-          </p>
+          <p className="text-xs sm:text-sm text-text-muted text-center">{currentQuestion + 1} of {questions.length}</p>
         </div>
 
-        {/* Question area — glassmorphism card */}
-        <div className="flex-1 flex flex-col justify-center">
+        {/* Question area */}
+        <div className="flex-1 flex flex-col justify-center min-h-0">
           <AnimatePresence mode="wait" custom={direction}>
-            <motion.div
-              key={currentQuestion}
-              custom={direction}
-              variants={slideVariants}
-              initial="enter"
-              animate="center"
-              exit="exit"
+            <motion.div key={currentQuestion} custom={direction} variants={slideVariants} initial="enter" animate="center" exit="exit"
               transition={{ duration: 0.3, ease: "easeOut" }}
-              className="glass rounded-3xl border border-mm-border/50 p-6 sm:p-8 shadow-lg space-y-6"
-            >
-              <div className="text-center space-y-2">
-                <h2 className="font-display text-xl sm:text-2xl md:text-3xl font-medium text-text-dark leading-snug">
-                  {question.question}
-                </h2>
-                <p className="text-sm text-text-muted font-light">{question.subText}</p>
+              className="glass-strong rounded-2xl sm:rounded-3xl p-5 sm:p-8 shadow-xl space-y-4 sm:space-y-6">
+              <div className="text-center space-y-1.5 sm:space-y-2">
+                <h2 className="font-display text-xl sm:text-2xl md:text-3xl font-medium text-text-dark leading-snug">{question.question}</h2>
+                <p className="text-sm sm:text-base text-text-muted font-light">{question.subText}</p>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3" role="radiogroup" aria-label={question.question}>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3" role="radiogroup" aria-label={question.question}>
                 {question.options.map((option, i) => {
                   const isSelected = selected === option.scores;
                   return (
-                    <motion.button
-                      key={option.label}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.25, delay: i * 0.05 }}
-                      onClick={() => handleSelect(option.scores)}
-                      role="radio"
-                      aria-checked={isSelected}
-                      className={`
-                        group relative text-left p-4 sm:p-5 rounded-2xl border-2 transition-all duration-200 cursor-pointer
-                        ${isSelected
-                          ? "border-navy bg-light-gray shadow-md scale-[1.02]"
-                          : "border-transparent bg-white/80 hover:bg-white hover:shadow-sm hover:-translate-y-0.5"
-                        }
-                        focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-navy
-                      `}
-                    >
+                    <motion.button key={option.label} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.2, delay: i * 0.04 }} onClick={() => handleSelect(option.scores)}
+                      role="radio" aria-checked={isSelected}
+                      className={`group relative text-left p-3.5 sm:p-5 rounded-xl sm:rounded-2xl border-2 transition-all duration-200 cursor-pointer
+                        ${isSelected ? "border-navy glass shadow-md" : "border-transparent bg-white/50 hover:bg-white/70 hover:shadow-sm"}
+                        focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-navy`}>
                       <div className="flex items-start gap-3">
-                        <div
-                          className={`
-                            mt-0.5 w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all duration-200
-                            ${isSelected ? "border-navy bg-navy scale-110" : "border-mm-border"}
-                          `}
-                        >
-                          {isSelected && (
-                            <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                            </svg>
-                          )}
+                        <div className={`mt-0.5 w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all duration-200
+                          ${isSelected ? "border-navy bg-navy" : "border-white/60"}`}>
+                          {isSelected && <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>}
                         </div>
                         <div>
-                          <p className="font-medium text-sm sm:text-base text-text-dark">{option.label}</p>
-                          <p className="text-xs sm:text-sm text-text-muted font-light mt-0.5">{option.subDescription}</p>
+                          <p className="font-medium text-sm sm:text-base text-text-dark leading-tight">{option.label}</p>
+                          <p className="text-xs sm:text-sm text-text-muted font-light mt-0.5 leading-snug">{option.subDescription}</p>
                         </div>
                       </div>
                     </motion.button>
@@ -159,29 +112,16 @@ export default function QuizScreen({ initialAnswers, onComplete, onBack }: QuizS
         </div>
 
         {/* Navigation */}
-        <div className="flex justify-between items-center pt-6 mt-auto">
-          <Button variant="ghost" onClick={handlePrev} className="text-text-mid hover:text-text-dark">
-            <svg className="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-            </svg>
+        <div className="flex justify-between items-center pt-3 sm:pt-6 shrink-0">
+          <Button variant="ghost" onClick={handlePrev} className="text-text-mid hover:text-text-dark text-sm">
+            <svg className="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" /></svg>
             Back
           </Button>
-
-          <Button
-            onClick={handleNext}
-            disabled={!selected}
-            className={`
-              rounded-full px-8 h-11 font-semibold text-sm tracking-wide transition-all duration-300
-              ${selected
-                ? "btn-shimmer text-white shadow-md hover:shadow-lg hover:scale-[1.02]"
-                : "bg-mm-border/40 text-text-muted"
-              }
-            `}
-          >
+          <Button onClick={handleNext} disabled={!selected}
+            className={`rounded-full px-6 sm:px-8 h-10 sm:h-11 font-semibold text-sm tracking-wide transition-all duration-300
+              ${selected ? "btn-shimmer text-white shadow-md" : "bg-white/30 text-text-muted"}`}>
             {isLastQuestion ? "See result" : "Next"}
-            <svg className="w-4 h-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d={isLastQuestion ? "M5 3l14 9-14 9V3z" : "M9 5l7 7-7 7"} />
-            </svg>
+            <svg className="w-4 h-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d={isLastQuestion ? "M5 3l14 9-14 9V3z" : "M9 5l7 7-7 7"} /></svg>
           </Button>
         </div>
       </div>
